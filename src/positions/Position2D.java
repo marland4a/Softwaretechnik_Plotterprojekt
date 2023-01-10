@@ -6,6 +6,12 @@ public class Position2D {
 
 	private double x, y;
 
+	// NEU: Add empty constructor
+	public Position2D() {
+		this.x = Double.NaN;
+		this.y = Double.NaN;
+	}
+	
 	public Position2D(double x, double y) {
 		this.x = x;
 		this.y = y;

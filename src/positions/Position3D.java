@@ -6,6 +6,12 @@ package positions;
 public class Position3D extends Position2D {
 
 	private boolean z;
+	
+	// NEU: Add 
+	public Position3D() {
+		super();
+		this.z = false;
+	}
 
 	public Position3D(double x, double y, boolean z) {
 		super(x, y);
@@ -20,4 +26,8 @@ public class Position3D extends Position2D {
 		return z;
 	}
 
+	// NEU: Was missing
+	public void setZ(boolean z) {
+		this.z = z;
+	}
 }
