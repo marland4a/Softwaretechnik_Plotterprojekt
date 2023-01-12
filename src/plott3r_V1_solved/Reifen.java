@@ -1,17 +1,17 @@
 package plott3r_V1_solved;
 
 public class Reifen {
-	private double durchmesser;
+	private float durchmesser;
 
-	public Reifen(double durchmesser) {
+	public Reifen(float durchmesser) {
 		this.durchmesser = durchmesser;
 	}
 
-	public double getDurchmesser() {
+	public float getDurchmesser() {
 		return durchmesser;
 	}
 
-	public double getUmfang() {
-		return this.durchmesser * Math.PI;
+	public float getUmfang() {
+		return this.durchmesser * (float) Math.PI;
 	}
 }

@@ -29,10 +29,10 @@ public class Roboter {
 	private Position3D currentPosition;
 
 	private MultiPositionAchse xAchse = new MultiPositionAchse(new TouchSensor(SensorPort.S1), MotorPort.A,
-			Einbaurichtung.UMGEKEHRT, new Reifen(40.0),
+			Einbaurichtung.UMGEKEHRT, new Reifen(40.0f),
 			new Zahnradsatz(new Zahnrad(Zahnrad.ANZAHL_ZAEHNE_KLEIN), new Zahnrad(Zahnrad.ANZAHL_ZAEHNE_GROSS)));
 	private MultiPositionAchse yAchse = new MultiPositionAchse(new LichtSensor(SensorPort.S3), MotorPort.B,
-			Einbaurichtung.UMGEKEHRT, new Reifen(43.2),
+			Einbaurichtung.UMGEKEHRT, new Reifen(43.2f),
 			new Zahnradsatz(new Zahnrad(Zahnrad.ANZAHL_ZAEHNE_KLEIN), new Zahnrad(Zahnrad.ANZAHL_ZAEHNE_GROSS)));
 	private DualPositionAchse zAchse = new DualPositionAchse(null, MotorPort.C, Einbaurichtung.REGULAER, null, null);
 
@@ -96,26 +96,27 @@ public class Roboter {
 		this.resetTachoCounts();
 	}
 
-	private void moveToPosition(Position2D position2D, int mmSec) throws InterruptedException {
+	private void moveToPosition(Position2D position2D, float mmSec) throws InterruptedException {
 		this.moveToPosition(new Position3D(position2D, this.zAchse.isAktiv()), mmSec);
 	}
 
-	private void moveToPosition(Position3D position, int mmSec) throws InterruptedException {
+	private void moveToPosition(Position3D position, float mmSec) throws InterruptedException {
 		if (position.isZ())
 			this.zAchse.aktiviere();
 		else
 			this.zAchse.deaktiviere();
 
-		double deltaX = currentPosition.getX() - position.getX();
-		double deltaY = currentPosition.getY() - position.getY();
-		double hypo = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+		float deltaX = currentPosition.getX() - position.getX();
+		float deltaY = currentPosition.getY() - position.getY();
+		float hypo = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-		double time = hypo / mmSec;
+		// float time = hypo / mmSec;
+		float freq = mmSec / hypo; // 1/s
 
 		xAchse.getMotor().synchronizeWith(yAchse.getMotor());
 
-		xAchse.setSpeed(deltaX / time);
-		yAchse.setSpeed(deltaY / time);
+		xAchse.setSpeed(deltaX * freq);
+		yAchse.setSpeed(deltaY * freq);
 
 		xAchse.getMotor().startSynchronization();
 
@@ -129,7 +130,6 @@ public class Roboter {
 
 		this.currentPosition = new Position3D(xAchse.getPositionFromTachoCount(), yAchse.getPositionFromTachoCount(),
 				zAchse.isAktiv());
-
 	}
 
 	private void resetTachoCounts() {
