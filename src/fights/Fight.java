@@ -66,10 +66,10 @@ public class Fight {
 		LCD.clear();
 		this.drawBorder();
 		// Draw options
-		LCD.drawString("> Fight", 3, 3);
-		LCD.drawString("Item", 5, 4);
-		LCD.drawString("Pokemon", 5, 5);
-		LCD.drawString("Run", 5, 6);
+		LCD.drawString("> Fight", 3, 2);
+		LCD.drawString("Item", 5, 3);
+		LCD.drawString("Pokemon", 5, 4);
+		LCD.drawString("Run", 5, 5);
 		// Get selection (UP/DOWN, Bestätigen mit Enter)
 		int button;
 		while(true) {
@@ -81,7 +81,7 @@ public class Fight {
 				LCD.drawChar(' ', 3, option+3);
 				option++;
 				if(option > 3) {
-					option = 2;
+					option = 0;
 				}
 				LCD.drawChar('>', 3, option+3);
 			}
@@ -89,7 +89,7 @@ public class Fight {
 				LCD.drawChar(' ', 3, option+3);
 				option--;
 				if(option < 0) {
-					option = 0;
+					option = 3;
 				}
 				LCD.drawChar('>', 3, option+3);
 			}
@@ -101,9 +101,9 @@ public class Fight {
 			case 1: // Item
 				LCD.clear();
 				this.drawBorder();
-				LCD.drawString("Du hast", 5, 3);
-				LCD.drawString("noch keine", 3, 4);
-				LCD.drawString("Items", 6, 5);
+				LCD.drawString("Du hast", 5, 2);
+				LCD.drawString("noch keine", 3, 3);
+				LCD.drawString("Items", 6, 4);
 				Button.waitForAnyPress();	// Auf Bestätigung warten
 				this.drawStartScreen();
 				break;
@@ -113,9 +113,9 @@ public class Fight {
 			case 3: // Run
 				LCD.clear();
 				this.drawBorder();
-				LCD.drawString("Du hast", 5, 3);
-				LCD.drawString("aufgegeben", 3, 4);
-				LCD.drawString("Schade!", 5, 6);
+				LCD.drawString("Du hast", 5, 2);
+				LCD.drawString("aufgegeben", 3, 3);
+				LCD.drawString("Schade!", 5, 4);
 				System.exit(0);
 				Button.waitForAnyPress();	// Auf Bestätigung warten
 				break;
@@ -142,10 +142,10 @@ public class Fight {
 		// Draw options
 		LCD.clear();
 		this.drawBorder();
-		LCD.drawString("Attack 1", 5, 3);
-		LCD.drawString("Attack 2", 5, 4);
-		LCD.drawString("Attack 3", 5, 5);
-		LCD.drawString("Attack 4", 5, 6);
+		LCD.drawString("Donnerschock", 5, 2);
+		LCD.drawString("Heuler", 5, 3);
+		LCD.drawString("Donnerwelle", 5, 4);
+		LCD.drawString("Ruckzuckhieb", 5, 5);
 		// Get selection (UP/DOWN, Bestätigen mit Enter)
 		int button;
 		while(true) {
@@ -155,14 +155,14 @@ public class Fight {
 			}
 			else if(button == Button.ID_DOWN) {
 				option++;
-				if(option >= 3) {
-					option = 2;
+				if(option > 3) {
+					option = 0;
 				}
 			}
 			else if(option == Button.ID_UP) {
 				option--;
 				if(option < 0) {
-					option = 0;
+					option = 3;
 				}
 			}
 		}
