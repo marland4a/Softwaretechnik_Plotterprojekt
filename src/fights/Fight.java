@@ -9,9 +9,12 @@ public class Fight {
 	private Pokemon myPokemon;
 	private Pokemon yourPokemon;
 	private plott3r_V1_solved.Roboter roboter;
+	private LcdImages lcdimages;
+	private GraphicsLCD glcd = lejos.hardware.BrickFinder.getDefault().getGraphicsLCD();
 	
 	public Fight(plott3r_V1_solved.Roboter roboter) {
 		this.roboter = roboter;
+		this.lcdimages = new LcdImages();
 	}
 	
 	/* Start fight */
@@ -23,13 +26,25 @@ public class Fight {
 		// Draw fight scene
 		//this.drawFightScene();
 		// Fight
-		int my_option = 0;
-		int your_option = 0;
+		int my_option, your_option;
+		int my_damage, your_damage;
 		while(this.myPokemon.getLife() > 0 && this.yourPokemon.getLife() > 0) {
 			my_option = this.drawAttackScreen();
 			your_option = new Random().nextInt(4);
-			this.myPokemon.reduceLife(Pokemon.optionToDamage(your_option));
-			this.yourPokemon.reduceLife(Pokemon.optionToDamage(my_option));
+			my_damage = Pokemon.optionToDamage(my_option);
+			your_damage = Pokemon.optionToDamage(my_option);
+			if(my_damage < 0) {
+				your_damage += my_damage;		// Verringere Gegnerschaden
+			}
+			if(your_damage < 0) {
+				my_damage += your_damage;		// Verringere Spielerschaden
+				your_damage = 0;				// Selber keinen Schaden machen
+			}
+			if(my_damage < 0) {
+				my_damage = 0;
+			}
+			this.myPokemon.reduceLife(your_damage);
+			this.yourPokemon.reduceLife(my_damage);
 			LCD.clear();
 			this.drawBorder();
 			LCD.drawString(this.myPokemon.getName(), 3, 2);
@@ -58,7 +73,8 @@ public class Fight {
 	}
 	
 	private void drawBorder() {
-		
+		Image border = this.lcdimages.getBorder();
+		this.glcd.drawRegion(border, 0, 0, border.getWidth(), border.getHeight(), 0, this.glcd.getWidth(), this.glcd.getHeight(), 0);
 	}
 	
 	private void drawStartScreen() {
