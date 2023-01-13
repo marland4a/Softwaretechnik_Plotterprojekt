@@ -66,7 +66,7 @@ public class Pokemon {
 	public Pokemon(String name, String gcode_path) {
 		this.name = name;
 		this.gcode_path = gcode_path;
-		this.life = 19;
+		this.life = 100;
 	}
 	
 	public String getName() {
