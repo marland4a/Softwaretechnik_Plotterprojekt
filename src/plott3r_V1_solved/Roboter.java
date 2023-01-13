@@ -65,7 +65,7 @@ public class Roboter {
 			roboter.bereitePapierVor();
 			
 			roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
-			roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte.gcode");
+			roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte nachbearbeitet.gcode");
 			//roboter.drawGcode("test2.gcode");
 			//roboter.moveToPosition(new positions.Position3D(50, 0, false), 10);
 			//roboter.moveToPosition(new positions.Position3D(50, 50, false), 10);
