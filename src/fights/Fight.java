@@ -43,8 +43,7 @@ public class Fight {
 		}
 		// Ende
 		LCD.clear();
-		LCD.drawString("Fight", 10, 1);
-		LCD.drawString("Item", 10, 3);
+
 		this.drawBorder();
 		if(this.myPokemon.getLife() > this.yourPokemon.getLife()) {
 			LCD.drawString(this.myPokemon.getName(), 3, 2);
@@ -66,6 +65,10 @@ public class Fight {
 	private void drawStartScreen() {
 		LCD.clear();
 		this.drawBorder();
+		LCD.drawString("Fight", 1, 2);
+		LCD.drawString("Item", 1, 6);
+		LCD.drawString("Pokemon", 8, 2);
+		LCD.drawString("Run", 8, 6);
 	}
 	
 	private void selectPokemons() {
