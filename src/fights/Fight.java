@@ -2,7 +2,6 @@ package fights;
 import lejos.hardware.lcd.*;
 import lejos.hardware.Button;
 import java.util.Random;
-import lejos.hardware.lcd.GraphicsLCD;
 
 
 public class Fight {
@@ -22,7 +21,7 @@ public class Fight {
 		// Select pokemons
 		this.selectPokemons();
 		// Draw fight scene
-		this.drawFightScene();
+		//this.drawFightScene();
 		// Fight
 		int my_option = 0;
 		int your_option = 0;
@@ -63,12 +62,64 @@ public class Fight {
 	}
 	
 	private void drawStartScreen() {
+		int option = 0;
 		LCD.clear();
 		this.drawBorder();
-		LCD.drawString("Fight", 1, 2);
-		LCD.drawString("Item", 1, 6);
-		LCD.drawString("Pokemon", 8, 2);
-		LCD.drawString("Run", 8, 6);
+		// Draw options
+		LCD.drawString("> Fight", 3, 3);
+		LCD.drawString("Item", 5, 4);
+		LCD.drawString("Pokemon", 5, 5);
+		LCD.drawString("Run", 5, 6);
+		// Get selection (UP/DOWN, Bestätigen mit Enter)
+		int button;
+		while(true) {
+			button = Button.waitForAnyPress();
+			if(button == Button.ID_ENTER) {
+				break;
+			}
+			else if(button == Button.ID_DOWN) {
+				LCD.drawChar(' ', 3, option+3);
+				option++;
+				if(option > 3) {
+					option = 2;
+				}
+				LCD.drawChar('>', 3, option+3);
+			}
+			else if(option == Button.ID_UP) {
+				LCD.drawChar(' ', 3, option+3);
+				option--;
+				if(option < 0) {
+					option = 0;
+				}
+				LCD.drawChar('>', 3, option+3);
+			}
+		}
+		// Optionen auswerten
+		switch(option) {
+			case 0: // Fight
+				break;
+			case 1: // Item
+				LCD.clear();
+				this.drawBorder();
+				LCD.drawString("Du hast", 5, 3);
+				LCD.drawString("noch keine", 3, 4);
+				LCD.drawString("Items", 6, 5);
+				Button.waitForAnyPress();	// Auf Bestätigung warten
+				this.drawStartScreen();
+				break;
+			case 2: // Pokemon
+				this.selectPokemons();
+				break;
+			case 3: // Run
+				LCD.clear();
+				this.drawBorder();
+				LCD.drawString("Du hast", 5, 3);
+				LCD.drawString("aufgegeben", 3, 4);
+				LCD.drawString("Schade!", 5, 6);
+				System.exit(0);
+				Button.waitForAnyPress();	// Auf Bestätigung warten
+				break;
+		}
 	}
 	
 	private void selectPokemons() {
