@@ -5,7 +5,24 @@ import java.util.Random;
 public class Pokemon {
 	
 	public static int optionToDamage(int option) {
-		return new Random().nextInt(5); // Test: 0 bis 4 Damage
+		// return new Random().nextInt(5); // Test: 0 bis 4 Damage
+		Random Rand = new Random();
+		switch(option) {
+		case 0: 							//Attacke Donnerschock
+			return Rand.nextInt(10)+30;
+			
+		case 1:  							//Attacke Heuler
+			return Rand.nextInt(10)+10;
+			
+		case 2:  							//Attacke Donnerwelle
+			return Rand.nextInt(10)+15;
+			
+		case 3:  							//Attacke Ruckzuckhieb
+			return Rand.nextInt(10)+20;
+			
+		default:
+			return 0;
+		}
 	}
 	
 	public static Pokemon getPokemon(String name) {
