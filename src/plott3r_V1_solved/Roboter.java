@@ -13,7 +13,7 @@ import util.Plott3rLCD;
 public class Roboter {
 	
 	private final float XACHSE_MIN = -136.0f;
-	private final float YACHSE_MAX = 250.0f;
+	private final float YACHSE_MAX = 230.0f;
 	
 	/* Draw a GCode file with relative coordinates and exit at EOF */
 	public void drawGcode(String filename) throws InterruptedException {
@@ -65,14 +65,14 @@ public class Roboter {
 			roboter.bereitePapierVor();
 			
 			roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
-			//roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
+			roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte.gcode");
 			//roboter.drawGcode("test2.gcode");
 			//roboter.moveToPosition(new positions.Position3D(50, 0, false), 10);
 			//roboter.moveToPosition(new positions.Position3D(50, 50, false), 10);
 			//roboter.moveToPosition(new positions.Position3D(0, 50, false), 10);
 			
-			fights.Fight fight = new fights.Fight(roboter);
-			fight.start();
+			//fights.Fight fight = new fights.Fight(roboter);
+			//fight.start();
 
 			Delay.msDelay(1000);
 			roboter.entfernePapier();

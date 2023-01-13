@@ -18,7 +18,7 @@ import util.FileAccess;
 /**
  * https://sourceforge.net/p/lejos/wiki/
  * 
- * @author René Gerlach
+ * @author Renï¿½ Gerlach
  *
  */
 public class Basics {
@@ -117,7 +117,7 @@ public class Basics {
 		FileAccess fileAccess = new FileAccess(".");
 		FileAccess.displayDirectoryContents(fileAccess.getFile());
 
-		// Datei kann über Control Center hochgeladen werden
+		// Datei kann ï¿½ber Control Center hochgeladen werden
 		int time = Sound.playSample(new File("./tetris-16bit.wav"), 100);
 		System.out.println("Time: " + time);
 
@@ -131,11 +131,11 @@ public class Basics {
 		float[] sample = new float[sensorMode.sampleSize()];
 		sensorMode.fetchSample(sample, 0);
 		while (sample[0] == 0) {
-			LCD.drawString("Nicht gedrückt: " + sample[0], 0, 0);
+			LCD.drawString("Nicht gedrï¿½ckt: " + sample[0], 0, 0);
 			sensorMode.fetchSample(sample, 0);
 			Delay.msDelay(200);
 		}
-		LCD.drawString("Gedrückt!", 0, 0);
+		LCD.drawString("Gedrï¿½ckt!", 0, 0);
 	}
 
 	private static void synchroExample() {
@@ -160,21 +160,21 @@ public class Basics {
 	}
 
 	private static void verfahreXmm(int streckeInMm, int mmSec) {
-		double durchmesserReifen = 43.2;
+		float durchmesserReifen = 43.2f;
 		int anzahlZaehneZ1 = 36;
 		int anzahlZaehneZ2 = 12;
 
-		double umfangReifen = durchmesserReifen * Math.PI;
+		float umfangReifen = durchmesserReifen * (float)Math.PI;
 
-		double anzahlUmdrehungenReifen = streckeInMm / umfangReifen;
+		float anzahlUmdrehungenReifen = streckeInMm / umfangReifen;
 
-		double uebersetzungsverhaeltnis = ((double) anzahlZaehneZ2) / anzahlZaehneZ1;
+		float uebersetzungsverhaeltnis = ((float) anzahlZaehneZ2) / anzahlZaehneZ1;
 
-		double anzahlUmdrehungenMotor = anzahlUmdrehungenReifen / uebersetzungsverhaeltnis;
+		float anzahlUmdrehungenMotor = anzahlUmdrehungenReifen / uebersetzungsverhaeltnis;
 
 		int gradAmMotor = (int) (360 * anzahlUmdrehungenMotor + 0.5);
 
-		int gradProSekundeAmMotor = (int) (gradAmMotor / ((double) streckeInMm / mmSec));
+		int gradProSekundeAmMotor = (int) (gradAmMotor / ((float) streckeInMm / mmSec));
 
 	}
 
