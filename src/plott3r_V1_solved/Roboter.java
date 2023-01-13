@@ -12,8 +12,8 @@ import util.Plott3rLCD;
 
 public class Roboter {
 	
-	private final float XACHSE_MIN = -136.0;
-	private final float YACHSE_MAX = 250.0;
+	private final float XACHSE_MIN = -136.0f;
+	private final float YACHSE_MAX = 250.0f;
 	
 	/* Draw a GCode file with relative coordinates and exit at EOF */
 	public void drawGcode(String filename) throws InterruptedException {
@@ -64,7 +64,7 @@ public class Roboter {
 			roboter.moveToHomePosition();
 			roboter.bereitePapierVor();
 			
-			roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
+			roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
 			//roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
 			//roboter.drawGcode("test2.gcode");
 			//roboter.moveToPosition(new positions.Position3D(50, 0, false), 10);
@@ -172,6 +172,13 @@ public class Roboter {
 	}
 
 	private void moveToPosition(Position3D position, float mmSec) throws InterruptedException {
+		
+		// If motor was still moving, wait for complete
+		xAchse.getMotor().waitComplete();
+		yAchse.getMotor().waitComplete();
+		this.currentPosition = new Position3D(xAchse.getPositionFromTachoCount(), yAchse.getPositionFromTachoCount(),
+				zAchse.isAktiv());
+		
 		if (position.isZ())
 			this.zAchse.aktiviere();
 		else
@@ -181,15 +188,17 @@ public class Roboter {
 		//float deltaY = currentPosition.getY() - position.getY();
 		float deltaX = (-1*this.XACHSE_MIN - position.getX()) - currentPosition.getX();
 		float deltaY = position.getY() - currentPosition.getY();
-		float hypo = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+		//float hypo = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
 		// float time = hypo / mmSec;
-		float freq = mmSec / hypo; // 1/s
+		//float freq = mmSec / hypo; // 1/s
+		//float verhaeltnis = deltaX / deltaY;
+		float verhaeltnis = deltaY / deltaX;
 
 		xAchse.getMotor().synchronizeWith(yAchse.getMotor());
 
-		xAchse.setSpeed(deltaX * freq);
-		yAchse.setSpeed(deltaY * freq);
+		xAchse.setSpeed(50.0f);
+		yAchse.setSpeed(50.0f * verhaeltnis);
 
 		xAchse.getMotor().startSynchronization();
 
@@ -198,18 +207,20 @@ public class Roboter {
 
 		xAchse.getMotor().endSynchronization();
 
-		xAchse.getMotor().waitComplete();
+		// Get next point while motor is moving
+		/*xAchse.getMotor().waitComplete();
 		yAchse.getMotor().waitComplete();
 
 		this.currentPosition = new Position3D(xAchse.getPositionFromTachoCount(), yAchse.getPositionFromTachoCount(),
 				zAchse.isAktiv());
+		*/
 	}
 
 	private void resetTachoCounts() {
 		this.xAchse.resetTachoCount();
 		this.yAchse.resetTachoCount();
 		if (xAchse.getTachoCount() != 0 || yAchse.getTachoCount() != 0)
-			throw new RuntimeException("Konnte Tachocount nicht zur�cksetzen");
+			throw new RuntimeException("Konnte Tachocount nicht zuruecksetzen");
 	}
 
 	public void stop() {
