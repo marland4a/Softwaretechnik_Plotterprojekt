@@ -6,14 +6,14 @@ package positions;
 public class Position3D extends Position2D {
 
 	private boolean z;
-	
-	// NEU: Add 
+
+	// NEU: Add
 	public Position3D() {
 		super();
 		this.z = false;
 	}
 
-	public Position3D(double x, double y, boolean z) {
+	public Position3D(float x, float y, boolean z) {
 		super(x, y);
 		this.z = z;
 	}
