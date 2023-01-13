@@ -2,6 +2,7 @@ package plott3r_V1_solved;
 
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.utility.Delay;
@@ -10,16 +11,73 @@ import positions.Position3D;
 import util.Plott3rLCD;
 
 public class Roboter {
+	
+	private final double XACHSE_MIN = -136.0;
+	private final double YACHSE_MAX = 250.0;
+	
+	/* Draw a GCode file with relative coordinates and exit at EOF */
+	public void drawGcode(String filename) throws InterruptedException {
+		util.GcodeParser parser = new util.GcodeParser(filename);
+		positions.Position3D bewegung = new positions.Position3D(0, 0, false);
+		/*do {
+			nextPos = parser.getPosition();
+			if(nextPos == null) {
+				return;
+			}*/
+		for(positions.Position3D nextPos: parser.getAllPositions()) {
+			//nextPos.setX(nextPos.getX() / -100.0);
+			//nextPos.setY(nextPos.getY() / -100.0);
+			if(!Double.isNaN(nextPos.getX())) {
+				//nextPos.setX(prevPos.getX());
+				bewegung.setX(nextPos.getX());
+			}
+			//bewegung.setX(nextPos.getX() - prevPos.getX());
+			if(!Double.isNaN(nextPos.getY())) {
+				//nextPos.setY(prevPos.getY());
+				bewegung.setY(this.YACHSE_MAX - nextPos.getY());
+			}
+			//bewegung.setY(nextPos.getY() - prevPos.getY());
+			bewegung.setZ(nextPos.isZ());
+			
+			/*System.out.println(bewegung.getX());
+			System.out.println(bewegung.getY());
+			System.out.println();*/
+			
+			this.moveToPosition(bewegung, 50);
+			//LCD.drawInt((int)nextPos.getX(), 0, 0);
+			//LCD.drawInt((int)nextPos.getY(), 0, 1);
+			//Delay.msDelay(1000);
+			//prevPos = nextPos;
+		//} while(nextPos != null);
+		}
+	}
+	
+	/* Display image on display */
+	private void drawDisplay(String filename) {
+		
+	}
+	
 	public static void main(String args[]) {
 		try {
 			Roboter roboter = new Roboter();
 			Sound.beep();
 			roboter.moveToHomePosition();
 			roboter.bereitePapierVor();
+			
+			roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
+			//roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
+			//roboter.drawGcode("test2.gcode");
+			//roboter.moveToPosition(new positions.Position3D(50, 0, false), 10);
+			//roboter.moveToPosition(new positions.Position3D(50, 50, false), 10);
+			//roboter.moveToPosition(new positions.Position3D(0, 50, false), 10);
+			
+			fights.Fight fight = new fights.Fight(roboter);
+			fight.start();
 
 			Delay.msDelay(1000);
 			roboter.entfernePapier();
-			roboter.moveToHomePosition();
+			//roboter.moveToHomePosition();
+			roboter.moveToPosition(new positions.Position3D(0, 0, false), 50);
 			Sound.twoBeeps();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,8 +108,13 @@ public class Roboter {
 		yAchse.stop();
 		// f�hrt die y-Achse etwas weiter zur�ck, sodass mehr Platz vom Papier
 		// genutzt werden kann
-		yAchse.backward();
-		Delay.msDelay(230);
+		//yAchse.backward();
+		//Delay.msDelay(230);
+		//yAchse.stop();
+		yAchse.setSpeed(5);
+		while(yAchse.isSensorAktiv()) {
+			yAchse.backward();
+		}
 		yAchse.stop();
 		yAchse.resetTachoCount();
 		Plott3rLCD.drawString("PRESS Programmstarten");
@@ -61,7 +124,8 @@ public class Roboter {
 	private void entfernePapier() throws InterruptedException {
 		zAchse.deaktiviere();
 		yAchse.setSpeed(Integer.MAX_VALUE);
-		yAchse.backward(2000);
+		//yAchse.backward(2000);
+		yAchse.forward(2000);
 	}
 
 	@Override
@@ -89,11 +153,18 @@ public class Roboter {
 			xAchse.backward();
 		}
 		xAchse.stop();
-		xAchse.forward();
-		Delay.msDelay(200);
+		//xAchse.forward();
+		//Delay.msDelay(200);
+		//xAchse.stop();
+		xAchse.setSpeed(5);
+		while(xAchse.isSensorAktiv()) {
+			xAchse.forward();
+		}
 		xAchse.stop();
 		this.currentPosition = new Position3D(0, 0, false);
 		this.resetTachoCounts();
+		this.moveToPosition(new positions.Position2D(0, 0), 20); 
+		this.currentPosition = new Position3D(-1*this.XACHSE_MIN, 0, false);
 	}
 
 	private void moveToPosition(Position2D position2D, int mmSec) throws InterruptedException {
@@ -106,8 +177,10 @@ public class Roboter {
 		else
 			this.zAchse.deaktiviere();
 
-		double deltaX = currentPosition.getX() - position.getX();
-		double deltaY = currentPosition.getY() - position.getY();
+		//double deltaX = currentPosition.getX() - position.getX();
+		//double deltaY = currentPosition.getY() - position.getY();
+		double deltaX = (-1*this.XACHSE_MIN - position.getX()) - currentPosition.getX();
+		double deltaY = position.getY() - currentPosition.getY();
 		double hypo = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
 		double time = hypo / mmSec;

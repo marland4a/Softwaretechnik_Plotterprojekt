@@ -9,6 +9,7 @@ public class DualPositionAchse extends Achse {
 
 	public DualPositionAchse(Sensor sensor, Port port, Einbaurichtung einbaurichtung, Reifen letzteEinheit, IUebersetzung... uebersetzungsEinheiten) {
 		super(sensor, port, einbaurichtung, letzteEinheit, uebersetzungsEinheiten);
+		this.aktiv = false;
 	}
 
 	public void aktiviere() {
