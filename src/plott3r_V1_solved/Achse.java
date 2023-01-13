@@ -28,7 +28,9 @@ public abstract class Achse {
 			this.uebersetzungsEinheiten = Arrays.asList(uebersetzungsEinheiten);
 		this.antriebsEinheit = antriebsEinheit;
 
-		this.mmZuGrad = this.getUebersetzungsverhaeltnis() * 360 / this.antriebsEinheit.getUmfang();
+		if(uebersetzungsEinheiten != null && this.antriebsEinheit != null) {
+			this.mmZuGrad = this.getUebersetzungsverhaeltnis() * 360 / this.antriebsEinheit.getUmfang();
+		}
 	}
 
 	protected int berechneGradAusMm(float mm) {

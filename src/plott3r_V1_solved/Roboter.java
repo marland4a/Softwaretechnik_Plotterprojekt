@@ -12,8 +12,8 @@ import util.Plott3rLCD;
 
 public class Roboter {
 	
-	private final float XACHSE_MIN = -136.0;
-	private final float YACHSE_MAX = 250.0;
+	private final float XACHSE_MIN = -136.0f;
+	private final float YACHSE_MAX = 250.0f;
 	
 	/* Draw a GCode file with relative coordinates and exit at EOF */
 	public void drawGcode(String filename) throws InterruptedException {
