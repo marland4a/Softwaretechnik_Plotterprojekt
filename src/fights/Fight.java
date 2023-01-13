@@ -1,5 +1,6 @@
 package fights;
 import lejos.hardware.lcd.*;
+import lejos.utility.Delay;
 import lejos.hardware.Button;
 import java.util.Random;
 
@@ -73,8 +74,10 @@ public class Fight {
 	}
 	
 	private void drawBorder() {
-		Image border = this.lcdimages.getBorder();
-		this.glcd.drawRegion(border, 0, 0, border.getWidth(), border.getHeight(), 0, this.glcd.getWidth(), this.glcd.getHeight(), 0);
+		//Image border = this.lcdimages.getBorderImg();
+		//this.glcd.drawRegion(border, 0, 0, border.getWidth(), border.getHeight(), 0, this.glcd.getWidth(), this.glcd.getHeight(), 0);
+		byte[] border = this.lcdimages.getBorder();
+		LCD.bitBlt(border, 178, 128, 0, 0, 0, 0, 178, 128, LCD.ROP_ORINVERTED);
 	}
 	
 	private void drawStartScreen() {
@@ -94,20 +97,20 @@ public class Fight {
 				break;
 			}
 			else if(button == Button.ID_DOWN) {
-				LCD.drawChar(' ', 3, option+3);
+				LCD.drawChar(' ', 3, option+2);
 				option++;
 				if(option > 3) {
 					option = 0;
 				}
-				LCD.drawChar('>', 3, option+3);
+				LCD.drawChar('>', 3, option+2);
 			}
 			else if(option == Button.ID_UP) {
-				LCD.drawChar(' ', 3, option+3);
+				LCD.drawChar(' ', 3, option+2);
 				option--;
 				if(option < 0) {
 					option = 3;
 				}
-				LCD.drawChar('>', 3, option+3);
+				LCD.drawChar('>', 3, option+2);
 			}
 		}
 		// Optionen auswerten
@@ -132,8 +135,8 @@ public class Fight {
 				LCD.drawString("Du hast", 5, 2);
 				LCD.drawString("aufgegeben", 3, 3);
 				LCD.drawString("Schade!", 5, 4);
-				System.exit(0);
 				Button.waitForAnyPress();	// Auf Bestätigung warten
+				System.exit(0);
 				break;
 		}
 	}
@@ -144,6 +147,12 @@ public class Fight {
 		
 		this.myPokemon = Pokemon.getRandom();
 		this.yourPokemon = Pokemon.getRandom();
+		
+		LCD.drawString("Dein Pokemon:", 2, 2);
+		LCD.drawString(this.myPokemon.getName(), 3, 3);
+		LCD.drawString("Dein Gegner:", 2, 4);
+		LCD.drawString(this.yourPokemon.getName(), 3, 5);
+		Button.waitForAnyPress();
 	}
 	
 	private void drawFightScene() throws InterruptedException {
@@ -158,7 +167,7 @@ public class Fight {
 		// Draw options
 		LCD.clear();
 		this.drawBorder();
-		LCD.drawString("Donnerschock", 5, 2);
+		LCD.drawString("> Donnerschock", 3, 2);
 		LCD.drawString("Heuler", 5, 3);
 		LCD.drawString("Donnerwelle", 5, 4);
 		LCD.drawString("Ruckzuckhieb", 5, 5);
@@ -170,16 +179,20 @@ public class Fight {
 				break;
 			}
 			else if(button == Button.ID_DOWN) {
+				LCD.drawChar(' ', 3, option+2);
 				option++;
 				if(option > 3) {
 					option = 0;
 				}
+				LCD.drawChar('>', 3, option+2);
 			}
 			else if(option == Button.ID_UP) {
+				LCD.drawChar(' ', 3, option+2);
 				option--;
 				if(option < 0) {
 					option = 3;
 				}
+				LCD.drawChar('>', 3, option+2);
 			}
 		}
 		return option;

@@ -61,10 +61,10 @@ public class Roboter {
 		try {
 			Roboter roboter = new Roboter();
 			Sound.beep();
-			roboter.moveToHomePosition();
-			roboter.bereitePapierVor();
+			//roboter.moveToHomePosition();
+			//roboter.bereitePapierVor();
 			
-			roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
+			//roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
 			//roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
 			//roboter.drawGcode("test2.gcode");
 			//roboter.drawGcode("Pikachu bereinigt 13012023.gcode");
