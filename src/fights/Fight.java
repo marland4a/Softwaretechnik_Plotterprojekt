@@ -2,6 +2,7 @@ package fights;
 import lejos.hardware.lcd.*;
 import lejos.hardware.Button;
 import java.util.Random;
+import lejos.hardware.lcd.GraphicsLCD;
 
 
 public class Fight {
@@ -42,6 +43,8 @@ public class Fight {
 		}
 		// Ende
 		LCD.clear();
+		LCD.drawString("Fight", 10, 1);
+		LCD.drawString("Item", 10, 3);
 		this.drawBorder();
 		if(this.myPokemon.getLife() > this.yourPokemon.getLife()) {
 			LCD.drawString(this.myPokemon.getName(), 3, 2);
