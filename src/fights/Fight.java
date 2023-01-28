@@ -32,14 +32,14 @@ public class Fight {
 		// this.drawFightScene(); // Disabled for testing
 
 		// Fight
-		int spieler_option, gegner_option;
+		Attack spieler_attack, gegner_attack;
 		int spieler_damage, gegner_damage;
 		while (this.spielerPokemon.getLife() > 0 && this.gegnerPokemon.getLife() > 0) {
 			// Attacke + Schaden
-			spieler_option = this.selectAttack(); // Spieler: Attacke auswählen
-			gegner_option = new Random().nextInt(4); // Gegner: Zufällige Attacke
-			spieler_damage = Pokemon.optionToDamage(spieler_option);
-			gegner_damage = Pokemon.optionToDamage(gegner_option);
+			spieler_attack = this.selectAttack(); // Spieler: Attacke auswählen
+			gegner_attack = Pokemon.getAttack(new Random().nextInt(4)); // Gegner: Zufällige Attacke
+			spieler_damage = spieler_attack.getDamage();
+			gegner_damage = gegner_attack.getDamage();
 			if (spieler_damage < 0) { // Negativer Schaden = Gegner blocken/schwächen
 				gegner_damage += spieler_damage; // Verringere Gegnerschaden
 			}
@@ -154,6 +154,7 @@ public class Fight {
 		LCD.clear();
 		this.drawBorder();
 
+		// TODO: Auswahlmenü?
 		this.spielerPokemon = Pokemon.getRandom(); // Auswahl durch Zufall
 
 		LCD.drawString("Dein Pokemon:", 2, 2);
@@ -174,15 +175,15 @@ public class Fight {
 		this.roboter.drawGcode("EKKIG bereinigt.gcode");
 	}
 
-	private int selectAttack() {
+	private Attack selectAttack() {
 		int option = 0;
 		// Draw options
 		LCD.clear();
 		this.drawBorder();
-		LCD.drawString("> Donnerschock", 3, 2); // Optionen anzeigen
-		LCD.drawString("Heuler", 5, 3);
-		LCD.drawString("Donnerwelle", 5, 4);
-		LCD.drawString("Ruckzuckhieb", 5, 5);
+		LCD.drawString("> " + Pokemon.getAttack(0), 3, 2); // Optionen anzeigen
+		LCD.drawString(Pokemon.getAttack(1).getName(), 5, 3);
+		LCD.drawString(Pokemon.getAttack(2).getName(), 5, 4);
+		LCD.drawString(Pokemon.getAttack(3).getName(), 5, 5);
 		// Get selection (UP/DOWN, Bestätigen mit Enter)
 		int button;
 		while (true) {
@@ -205,6 +206,6 @@ public class Fight {
 				LCD.drawChar('>', 3, option + 2);
 			}
 		}
-		return option;
+		return Pokemon.getAttack(option);
 	}
 }
