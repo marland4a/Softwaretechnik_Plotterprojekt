@@ -26,6 +26,13 @@ public class Position2D {
 		return false;
 	}
 
+	// NEU: Additions"operator" hinzufügen
+	public Position2D add(Position2D pos) {
+		this.setX(x + pos.getX());
+		this.setY(y + pos.getY());
+		return this;
+	}
+
 	public float getX() {
 		return x;
 	}
