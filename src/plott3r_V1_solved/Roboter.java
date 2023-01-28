@@ -14,6 +14,7 @@ public class Roboter {
 	
 	private final float XACHSE_MIN = -136.0f;
 	private final float YACHSE_MAX = 230.0f;
+	private final float YACHSE_MAX = 230.0f;
 	
 	/* Draw a GCode file with relative coordinates and exit at EOF */
 	public void drawGcode(String filename) throws InterruptedException {
@@ -34,7 +35,7 @@ public class Roboter {
 			//bewegung.setX(nextPos.getX() - prevPos.getX());
 			if(!Float.isNaN(nextPos.getY())) {
 				//nextPos.setY(prevPos.getY());
-				bewegung.setY(this.YACHSE_MAX - nextPos.getY());
+				bewegung.setY(this.YACHSE_MAX + nextPos.getY());
 			}
 			//bewegung.setY(nextPos.getY() - prevPos.getY());
 			bewegung.setZ(nextPos.isZ());
@@ -61,15 +62,18 @@ public class Roboter {
 		try {
 			Roboter roboter = new Roboter();
 			Sound.beep();
-			roboter.moveToHomePosition();
-			roboter.bereitePapierVor();
+			//roboter.moveToHomePosition();
+			//roboter.bereitePapierVor();
 			
+			//roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
+			//roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
 			roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
 			roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte nachbearbeitet.gcode");
 			//roboter.drawGcode("test2.gcode");
-			//roboter.moveToPosition(new positions.Position3D(50, 0, false), 10);
-			//roboter.moveToPosition(new positions.Position3D(50, 50, false), 10);
-			//roboter.moveToPosition(new positions.Position3D(0, 50, false), 10);
+			//roboter.drawGcode("Pikachu bereinigt 13012023.gcode");
+			
+			fights.Fight fight = new fights.Fight(roboter);
+			fight.start();
 			
 			//fights.Fight fight = new fights.Fight(roboter);
 			//fight.start();

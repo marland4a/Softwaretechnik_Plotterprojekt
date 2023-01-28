@@ -1,5 +1,6 @@
 package fights;
 import lejos.hardware.lcd.*;
+import lejos.utility.Delay;
 import lejos.hardware.Button;
 import java.util.Random;
 
@@ -9,9 +10,12 @@ public class Fight {
 	private Pokemon myPokemon;
 	private Pokemon yourPokemon;
 	private plott3r_V1_solved.Roboter roboter;
+	private LcdImages lcdimages;
+	private GraphicsLCD glcd = lejos.hardware.BrickFinder.getDefault().getGraphicsLCD();
 	
 	public Fight(plott3r_V1_solved.Roboter roboter) {
 		this.roboter = roboter;
+		this.lcdimages = new LcdImages();
 	}
 	
 	/* Start fight */
@@ -21,15 +25,27 @@ public class Fight {
 		// Select pokemons
 		this.selectPokemons();
 		// Draw fight scene
-		this.drawFightScene();
+		//this.drawFightScene();
 		// Fight
-		int my_option = 0;
-		int your_option = 0;
+		int my_option, your_option;
+		int my_damage, your_damage;
 		while(this.myPokemon.getLife() > 0 && this.yourPokemon.getLife() > 0) {
 			my_option = this.drawAttackScreen();
 			your_option = new Random().nextInt(4);
-			this.myPokemon.reduceLife(Pokemon.optionToDamage(your_option));
-			this.yourPokemon.reduceLife(Pokemon.optionToDamage(my_option));
+			my_damage = Pokemon.optionToDamage(my_option);
+			your_damage = Pokemon.optionToDamage(my_option);
+			if(my_damage < 0) {
+				your_damage += my_damage;		// Verringere Gegnerschaden
+			}
+			if(your_damage < 0) {
+				my_damage += your_damage;		// Verringere Spielerschaden
+				your_damage = 0;				// Selber keinen Schaden machen
+			}
+			if(my_damage < 0) {
+				my_damage = 0;
+			}
+			this.myPokemon.reduceLife(your_damage);
+			this.yourPokemon.reduceLife(my_damage);
 			LCD.clear();
 			this.drawBorder();
 			LCD.drawString(this.myPokemon.getName(), 3, 2);
@@ -42,6 +58,7 @@ public class Fight {
 		}
 		// Ende
 		LCD.clear();
+
 		this.drawBorder();
 		if(this.myPokemon.getLife() > this.yourPokemon.getLife()) {
 			LCD.drawString(this.myPokemon.getName(), 3, 2);
@@ -57,12 +74,71 @@ public class Fight {
 	}
 	
 	private void drawBorder() {
-		
+		//Image border = this.lcdimages.getBorderImg();
+		//this.glcd.drawRegion(border, 0, 0, border.getWidth(), border.getHeight(), 0, this.glcd.getWidth(), this.glcd.getHeight(), 0);
+		byte[] border = this.lcdimages.getBorder();
+		LCD.bitBlt(border, 178, 128, 0, 0, 0, 0, 178, 128, LCD.ROP_ORINVERTED);
 	}
 	
 	private void drawStartScreen() {
+		int option = 0;
 		LCD.clear();
 		this.drawBorder();
+		// Draw options
+		LCD.drawString("> Fight", 3, 2);
+		LCD.drawString("Item", 5, 3);
+		LCD.drawString("Pokemon", 5, 4);
+		LCD.drawString("Run", 5, 5);
+		// Get selection (UP/DOWN, Bestätigen mit Enter)
+		int button;
+		while(true) {
+			button = Button.waitForAnyPress();
+			if(button == Button.ID_ENTER) {
+				break;
+			}
+			else if(button == Button.ID_DOWN) {
+				LCD.drawChar(' ', 3, option+2);
+				option++;
+				if(option > 3) {
+					option = 0;
+				}
+				LCD.drawChar('>', 3, option+2);
+			}
+			else if(option == Button.ID_UP) {
+				LCD.drawChar(' ', 3, option+2);
+				option--;
+				if(option < 0) {
+					option = 3;
+				}
+				LCD.drawChar('>', 3, option+2);
+			}
+		}
+		// Optionen auswerten
+		switch(option) {
+			case 0: // Fight
+				break;
+			case 1: // Item
+				LCD.clear();
+				this.drawBorder();
+				LCD.drawString("Du hast", 5, 2);
+				LCD.drawString("noch keine", 3, 3);
+				LCD.drawString("Items", 6, 4);
+				Button.waitForAnyPress();	// Auf Bestätigung warten
+				this.drawStartScreen();
+				break;
+			case 2: // Pokemon
+				this.selectPokemons();
+				break;
+			case 3: // Run
+				LCD.clear();
+				this.drawBorder();
+				LCD.drawString("Du hast", 5, 2);
+				LCD.drawString("aufgegeben", 3, 3);
+				LCD.drawString("Schade!", 5, 4);
+				Button.waitForAnyPress();	// Auf Bestätigung warten
+				System.exit(0);
+				break;
+		}
 	}
 	
 	private void selectPokemons() {
@@ -71,6 +147,12 @@ public class Fight {
 		
 		this.myPokemon = Pokemon.getRandom();
 		this.yourPokemon = Pokemon.getRandom();
+		
+		LCD.drawString("Dein Pokemon:", 2, 2);
+		LCD.drawString(this.myPokemon.getName(), 3, 3);
+		LCD.drawString("Dein Gegner:", 2, 4);
+		LCD.drawString(this.yourPokemon.getName(), 3, 5);
+		Button.waitForAnyPress();
 	}
 	
 	private void drawFightScene() throws InterruptedException {
@@ -85,10 +167,10 @@ public class Fight {
 		// Draw options
 		LCD.clear();
 		this.drawBorder();
-		LCD.drawString("Attack 1", 5, 3);
-		LCD.drawString("Attack 2", 5, 4);
-		LCD.drawString("Attack 3", 5, 5);
-		LCD.drawString("Attack 4", 5, 6);
+		LCD.drawString("> Donnerschock", 3, 2);
+		LCD.drawString("Heuler", 5, 3);
+		LCD.drawString("Donnerwelle", 5, 4);
+		LCD.drawString("Ruckzuckhieb", 5, 5);
 		// Get selection (UP/DOWN, Bestätigen mit Enter)
 		int button;
 		while(true) {
@@ -97,16 +179,20 @@ public class Fight {
 				break;
 			}
 			else if(button == Button.ID_DOWN) {
+				LCD.drawChar(' ', 3, option+2);
 				option++;
-				if(option >= 3) {
-					option = 2;
-				}
-			}
-			else if(option == Button.ID_UP) {
-				option--;
-				if(option < 0) {
+				if(option > 3) {
 					option = 0;
 				}
+				LCD.drawChar('>', 3, option+2);
+			}
+			else if(option == Button.ID_UP) {
+				LCD.drawChar(' ', 3, option+2);
+				option--;
+				if(option < 0) {
+					option = 3;
+				}
+				LCD.drawChar('>', 3, option+2);
 			}
 		}
 		return option;
