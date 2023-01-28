@@ -4,6 +4,7 @@ import java.util.Random;
 
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import positions.Position2D;
 
 public class Fight {
 	/* Settings */
@@ -20,7 +21,7 @@ public class Fight {
 	/* Start fight */
 	public void start() throws InterruptedException {
 		// Display start screen (Auswahlmenü)
-		this.drawStartScreen();
+		this.printStartScreen();
 
 		// Select pokemons (falls noch nicht geschehen)
 		if (this.spielerPokemon == null) {
@@ -55,7 +56,7 @@ public class Fight {
 			this.gegnerPokemon.reduceLife(spieler_damage);
 			// Ergebnis anzeigen
 			LCD.clear();
-			this.drawBorder();
+			this.printBorder();
 			LCD.drawString(this.spielerPokemon.getName(), 3, 2);
 			LCD.drawString(": ", this.spielerPokemon.getName().length() + 3 + 1, 2);
 			LCD.drawInt(this.spielerPokemon.getLife(), 3, 3);
@@ -67,7 +68,7 @@ public class Fight {
 
 		// Ende: Ergebnis anzeigen
 		LCD.clear();
-		this.drawBorder();
+		this.printBorder();
 		if (this.spielerPokemon.getLife() > this.gegnerPokemon.getLife()) {
 			LCD.drawString(this.spielerPokemon.getName(), 3, 2);
 			LCD.drawString("hat gewonnen!", 3, 3);
@@ -79,7 +80,8 @@ public class Fight {
 		}
 	}
 
-	private void drawBorder() {
+	/* Rahmen am LCD anzeigen */
+	private void printBorder() {
 		// Image border = this.lcdimages.getBorderImg();
 		// this.glcd.drawRegion(border, 0, 0, border.getWidth(), border.getHeight(), 0,
 		// this.glcd.getWidth(), this.glcd.getHeight(), 0);
@@ -87,12 +89,13 @@ public class Fight {
 		LCD.bitBlt(border, 178, 128, 0, 0, 0, 0, 178, 128, LCD.ROP_ORINVERTED);
 	}
 
-	private void drawStartScreen() {
+	/* Initiales Auswahlmenü */
+	private void printStartScreen() {
 		int option = 0;
 		boolean exit = false;
 		while (!exit) {
 			LCD.clear();
-			this.drawBorder();
+			this.printBorder();
 			// Draw options
 			LCD.drawString("> Fight", 3, 2);
 			LCD.drawString("Item", 5, 3);
@@ -127,7 +130,7 @@ public class Fight {
 				break;
 			case 1: // Item (aktuell nicht implementiert)
 				LCD.clear();
-				this.drawBorder();
+				this.printBorder();
 				LCD.drawString("Du hast", 5, 2);
 				LCD.drawString("noch keine", 3, 3);
 				LCD.drawString("Items", 6, 4);
@@ -139,7 +142,7 @@ public class Fight {
 				break;
 			case 3: // Run
 				LCD.clear();
-				this.drawBorder();
+				this.printBorder();
 				LCD.drawString("Du hast", 5, 2);
 				LCD.drawString("aufgegeben.", 3, 3);
 				LCD.drawString("Schade!", 5, 4);
@@ -150,9 +153,10 @@ public class Fight {
 		}
 	}
 
+	/* Pokemon auswählen */
 	private void selectPokemon() {
 		LCD.clear();
-		this.drawBorder();
+		this.printBorder();
 
 		// TODO: Auswahlmenü?
 		this.spielerPokemon = Pokemon.getRandom(); // Auswahl durch Zufall
@@ -168,6 +172,7 @@ public class Fight {
 		Button.waitForAnyPress();
 	}
 
+	/* Fight-Szene (Rahmen) plotten */
 	private void drawFightScene() throws InterruptedException {
 		// this.roboter.drawGcode("fightscene_empty.gcode)");
 		// this.roboter.drawGcode(this.gegnerPokemon.getFile());
@@ -175,11 +180,24 @@ public class Fight {
 		this.roboter.drawGcode("EKKIG bereinigt.gcode");
 	}
 
+	/* Spieler-Pokemon plotten */
+	private void drawSpielerPokemon() throws InterruptedException {
+		Position2D position = new Position2D();
+		this.roboter.drawGcode(this.spielerPokemon.getGcodePath_front(), position);
+	}
+
+	/* Gegner-Pokemon plotten */
+	private void drawGegnerPokemon() throws InterruptedException {
+		Position2D position = new Position2D();
+		this.roboter.drawGcode(this.spielerPokemon.getGcodePath_back(), position);
+	}
+
+	/* Nächste Attacke auswählen */
 	private Attack selectAttack() {
 		int option = 0;
 		// Draw options
 		LCD.clear();
-		this.drawBorder();
+		this.printBorder();
 		LCD.drawString("> " + Pokemon.getAttack(0), 3, 2); // Optionen anzeigen
 		LCD.drawString(Pokemon.getAttack(1).getName(), 5, 3);
 		LCD.drawString(Pokemon.getAttack(2).getName(), 5, 4);

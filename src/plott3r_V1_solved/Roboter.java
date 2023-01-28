@@ -2,6 +2,7 @@ package plott3r_V1_solved;
 
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.utility.Delay;
@@ -51,31 +52,39 @@ public class Roboter {
 
 	}
 
+	/* MAIN */
 	public static void main(String args[]) {
 		try {
 			Roboter roboter = new Roboter();
-			Sound.beep();
-			roboter.moveToHomePosition();
-			roboter.bereitePapierVor();
-
-			// roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
-			// roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
-			roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
-			roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte nachbearbeitet.gcode");
-			// roboter.drawGcode("test2.gcode");
-			// roboter.drawGcode("Pikachu bereinigt 13012023.gcode");
-
 			fights.Fight fight = new fights.Fight(roboter);
-			fight.start();
 
-			// fights.Fight fight = new fights.Fight(roboter);
-			// fight.start();
+			// Kämpfen, bis der Spieler aufgibt
+			// Beendigung über Auswahl 'Run' in ersten Menü
+			while (true) {
+				Sound.beep();
+				roboter.moveToHomePosition();
+				roboter.bereitePapierVor();
 
-			Delay.msDelay(1000);
-			roboter.entfernePapier();
+				// Test:
+				// roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
+				// roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
+				roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
+				roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte nachbearbeitet.gcode");
+				// roboter.drawGcode("test2.gcode");
+				// roboter.drawGcode("Pikachu bereinigt 13012023.gcode");
+
+				fight.start();
+
+				Delay.msDelay(1000);
+				roboter.entfernePapier();
+				LCD.clear();
+				LCD.drawString("Nächste Runde", 2, 3);
+				LCD.drawString("beginnen...", 3, 4);
+				Button.waitForAnyPress();
+			}
 			// roboter.moveToHomePosition();
-			roboter.moveToPosition(new positions.Position3D(0, 0, false), 50);
-			Sound.twoBeeps();
+			// roboter.moveToPosition(new positions.Position3D(0, 0, false), 50);
+			// Sound.twoBeeps();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

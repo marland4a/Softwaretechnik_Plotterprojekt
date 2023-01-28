@@ -8,8 +8,9 @@ public class Pokemon {
 	private static Attack[] attacks = { new Attack("Donnerschock", 30, 40), new Attack("Heuler", 10, 20),
 			new Attack("Donnerwelle", 10, 25), new Attack("Ruckzuckhieb", 10, 30) };
 
-	private static Pokemon[] pokemons = { new Pokemon("Pikachu", "pikachu.gcode"),
-			new Pokemon("Schiggi", "schiggi.gcode"), new Pokemon("test2", "test2.gcode") };
+	private static Pokemon[] pokemons = { new Pokemon("Pikachu", "pikachu.gcode", "pikachu_back.gcode"),
+			new Pokemon("Schiggi", "schiggi.gcode", "schiggi_back.gcode"),
+			new Pokemon("test2", "test2.gcode", "test2.gcode") };
 
 	public static Attack getAttackByName(String name) {
 		for (Attack a : attacks) {
@@ -45,12 +46,14 @@ public class Pokemon {
 
 	/* Objektinhalte */
 	private String name;
-	private String gcode_path;
+	private String gcode_path_front; // Dateinamen der gcode Dateien
+	private String gcode_path_back;
 	private int life;
 
-	public Pokemon(String name, String gcode_path) {
+	public Pokemon(String name, String gcode_path_front, String gcode_path_back) {
 		this.name = name;
-		this.gcode_path = gcode_path;
+		this.gcode_path_front = gcode_path_front;
+		this.gcode_path_back = gcode_path_back;
 		this.life = 100;
 	}
 
@@ -58,8 +61,14 @@ public class Pokemon {
 		return this.name;
 	}
 
-	public String getGcodePath() {
-		return this.gcode_path;
+	/* Gcode der Vorderseite (Gegner) */
+	public String getGcodePath_front() {
+		return this.gcode_path_front;
+	}
+
+	/* Gcode der Rückseite (Spieler) */
+	public String getGcodePath_back() {
+		return this.gcode_path_back;
 	}
 
 	public int getLife() {
