@@ -49,12 +49,14 @@ public class Pokemon {
 	private String gcode_path_front; // Dateinamen der gcode Dateien
 	private String gcode_path_back;
 	private int life;
+	private int last_damage;	// Betrag der letzten Reduktion
 
 	public Pokemon(String name, String gcode_path_front, String gcode_path_back) {
 		this.name = name;
 		this.gcode_path_front = gcode_path_front;
 		this.gcode_path_back = gcode_path_back;
 		this.life = 100;
+		this.last_damage = 0;
 	}
 
 	public String getName() {
@@ -76,10 +78,15 @@ public class Pokemon {
 	}
 
 	public int reduceLife(int value) {
+		this.last_damage = value;
 		life -= value;
 		if (life < 0) {
 			life = 0;
 		}
 		return life;
+	}
+	
+	public int getLastDamage() {
+		return this.last_damage;
 	}
 }

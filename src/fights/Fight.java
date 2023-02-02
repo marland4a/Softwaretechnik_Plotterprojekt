@@ -55,15 +55,7 @@ public class Fight {
 			this.spielerPokemon.reduceLife(gegner_damage);
 			this.gegnerPokemon.reduceLife(spieler_damage);
 			// Ergebnis anzeigen
-			LCD.clear();
-			this.printBorder();
-			LCD.drawString(this.spielerPokemon.getName(), 3, 2);
-			LCD.drawString(": ", this.spielerPokemon.getName().length() + 3 + 1, 2);
-			LCD.drawInt(this.spielerPokemon.getLife(), 3, 3);
-			LCD.drawString(this.gegnerPokemon.getName(), 3, 4);
-			LCD.drawString(": ", this.gegnerPokemon.getName().length() + 3 + 1, 4);
-			LCD.drawInt(this.gegnerPokemon.getLife(), 3, 5);
-			Button.waitForAnyPress(); // Auf Bestätigung für nächsten Durchgang warten
+			this.printAttackResults();
 		}
 
 		// Ende: Ergebnis anzeigen
@@ -91,12 +83,12 @@ public class Fight {
 
 	/* Initiales Auswahlmenü */
 	private void printStartScreen() {
-		int option = 0;
 		boolean exit = false;
 		while (!exit) {
 			LCD.clear();
 			this.printBorder();
 			// Draw options
+			int option = 0;
 			LCD.drawString("> Fight", 3, 2);
 			LCD.drawString("Item", 5, 3);
 			LCD.drawString("Pokemon", 5, 4);
@@ -114,7 +106,7 @@ public class Fight {
 						option = 0;
 					}
 					LCD.drawChar('>', 3, option + 2);
-				} else if (option == Button.ID_UP) {
+				} else if (button == Button.ID_UP) {
 					LCD.drawChar(' ', 3, option + 2);
 					option--;
 					if (option < 0) {
@@ -167,7 +159,7 @@ public class Fight {
 		if (this.gegnerPokemon != null) {
 			LCD.drawString(this.gegnerPokemon.getName(), 3, 5);
 		} else {
-			LCD.drawString("�������", 5, 5); // Pokemon ist noch nicht bekannt
+			LCD.drawString("???????", 5, 5); // Pokemon ist noch nicht bekannt
 		}
 		Button.waitForAnyPress();
 	}
@@ -198,7 +190,7 @@ public class Fight {
 		// Draw options
 		LCD.clear();
 		this.printBorder();
-		LCD.drawString("> " + Pokemon.getAttack(0), 3, 2); // Optionen anzeigen
+		LCD.drawString("> " + Pokemon.getAttack(0).getName(), 3, 2); // Optionen anzeigen
 		LCD.drawString(Pokemon.getAttack(1).getName(), 5, 3);
 		LCD.drawString(Pokemon.getAttack(2).getName(), 5, 4);
 		LCD.drawString(Pokemon.getAttack(3).getName(), 5, 5);
@@ -225,5 +217,41 @@ public class Fight {
 			}
 		}
 		return Pokemon.getAttack(option);
+	}
+	
+	/* Ergebnis der Attacke darstellen */
+	private void printAttackResults() {
+		String int_str;
+		int lcd_pos;
+		
+		LCD.clear();
+		this.printBorder();
+		
+		this.printAttackResult(this.spielerPokemon, 2);
+		this.printAttackResult(this.gegnerPokemon, 4);
+		Button.waitForAnyPress(); // Auf Bestätigung für nächsten Durchgang warten
+	}
+	
+	/* Ergebnis für einen Spieler darstellen */
+	// lcd_y – Zeile, in der der Name steht. Die Leben stehen in der nächsten Zeile
+	private void printAttackResult(Pokemon pokemon, int lcd_y) {
+		String int_str;
+		// Erste Zeile: "Name:"
+		int lcd_x = 3;
+		LCD.drawString(pokemon.getName(), lcd_x, lcd_y);
+		lcd_x += pokemon.getName().length() + 1;
+		LCD.drawString(": ", lcd_x, 2);
+		// Zweite Zeile: " Leben (-Damage)"
+		lcd_x = 4;
+		lcd_y++;
+		int_str = String.valueOf(pokemon.getLife());
+		LCD.drawString(int_str, lcd_x, lcd_y);
+		lcd_x += int_str.length();
+		LCD.drawChar('(', lcd_x++, lcd_y);
+		LCD.drawChar('-', lcd_x++, lcd_y);
+		int_str = String.valueOf(pokemon.getLastDamage());
+		LCD.drawString(int_str, lcd_x, lcd_y);
+		lcd_x += int_str.length();
+		LCD.drawChar(')', lcd_x, lcd_y);
 	}
 }
