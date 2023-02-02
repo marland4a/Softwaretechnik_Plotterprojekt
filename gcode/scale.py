@@ -29,6 +29,8 @@ for line in lines:
     line_new = ''
     for coord in coords:
         string = ''
+        if len(coord) < 1:
+            continue
         if coord[0] == 'X':
             string += 'X'
             string += str(float(coord[1:]) * scale)
