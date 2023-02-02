@@ -33,12 +33,12 @@ for line in lines:
             continue
         if coord[0] == 'X':
             string += 'X'
-            string += str(float(coord[1:]) * scale)
+            string += str(round(float(coord[1:]) * scale, 2))
             string += ' '
             line_new += string
         elif coord[0] == 'Y':
             string += 'Y'
-            string += str(float(coord[1:]) * scale)
+            string += str(round(float(coord[1:]) * scale, 2))
             string += ' '
             line_new += string
         else:
