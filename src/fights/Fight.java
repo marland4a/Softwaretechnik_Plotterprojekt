@@ -151,10 +151,43 @@ public class Fight {
 	private void selectPokemon() {
 		LCD.clear();
 		this.printBorder();
+		int PokemonAnzahl = Pokemon.getPokemonNumber();
 
-		// TODO: Auswahlmenü?
-		this.spielerPokemon = Pokemon.getRandom(); // Auswahl durch Zufall
+		// Auswahlmenü
+		for(int n = 0; n <= PokemonAnzahl && n <= 4; n++) {
+			LCD.drawString(Pokemon.getPokemon(n).getName(), 5, 2+n);
+		}
+		
+		int button;
+		int option = 0;
+		
+		while (true) {
+			button = Button.waitForAnyPress();
+			if (button == Button.ID_ENTER) {
+				break;
+			} else if (button == Button.ID_DOWN) {
+				LCD.drawChar(' ', 3, option + 2);
+				option++;
+				if (option > PokemonAnzahl) {
+					option = 0;
+				}
+				LCD.drawChar('>', 3, option + 2);
+			} else if (button == Button.ID_UP) {
+				LCD.drawChar(' ', 3, option + 2);
+				option--;
+				if (option < 0) {
+					option = 1;
+				}
+				LCD.drawChar('>', 3, option + 2);
+			}
+		}
+		
+		// Optionen auswerten
+		Pokemon.getPokemon(option);
+		LCD.clear();
+		this.printBorder();
 
+		
 		LCD.drawString("Dein Pokemon:", 2, 2);
 		LCD.drawString(this.spielerPokemon.getName(), 3, 3);
 		LCD.drawString("Dein Gegner:", 2, 4);

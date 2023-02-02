@@ -34,10 +34,14 @@ public class Pokemon {
 		return attacks[nr];
 	}
 
-	private static Pokemon getPokemon(int nr) {
+	public static Pokemon getPokemon(int nr) {
 		return pokemons[nr];
 	}
 
+	public static int getPokemonNumber() {
+		return pokemons.length;
+	}
+	
 	public static Pokemon getRandom() {
 		Random random = new Random();
 		int rand = random.nextInt(pokemons.length); // Zufälliges Pokemon wählen
