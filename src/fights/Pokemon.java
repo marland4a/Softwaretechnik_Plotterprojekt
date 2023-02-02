@@ -3,14 +3,22 @@ package fights;
 import java.util.Random;
 
 public class Pokemon {
+	
+	public final int maxHealth = 200;
 
 	/* Statische Attribute / Funktionen */
-	private static Attack[] attacks = { new Attack("Donnerschock", 30, 40), new Attack("Heuler", 10, 20),
-			new Attack("Donnerwelle", 10, 25), new Attack("Ruckzuckhieb", 10, 30) };
+	private static Attack[] attacks = { 
+			new Attack("Donnerschock", 30, 40), 
+			new Attack("Heuler", -10, -10),
+			new Attack("Donnerwelle", 10, 25),
+			new Attack("Ruckzuckhieb", 10, 30)
+	};
 
-	private static Pokemon[] pokemons = { new Pokemon("Pikachu", "pikachu.gcode", "pikachu_back.gcode"),
+	private static Pokemon[] pokemons = {
+			new Pokemon("Pikachu", "pikachu.gcode", "pikachu_back.gcode"),
 			new Pokemon("Schiggi", "schiggi.gcode", "schiggi_back.gcode"),
-			new Pokemon("test2", "test2.gcode", "test2.gcode") };
+			new Pokemon("test2", "test2.gcode", "test2.gcode")
+	};
 
 	public static Attack getAttackByName(String name) {
 		for (Attack a : attacks) {
@@ -59,7 +67,7 @@ public class Pokemon {
 		this.name = name;
 		this.gcode_path_front = gcode_path_front;
 		this.gcode_path_back = gcode_path_back;
-		this.life = 100;
+		this.life = this.maxHealth;
 		this.last_damage = 0;
 	}
 

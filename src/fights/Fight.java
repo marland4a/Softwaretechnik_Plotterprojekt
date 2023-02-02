@@ -30,6 +30,7 @@ public class Fight {
 			this.selectPokemon();
 		}
 		this.gegnerPokemon = Pokemon.getRandom();
+		this.printPokemons(false);
 
 		// Draw fight scene
 		// this.drawFightScene(); // Disabled for testing
@@ -126,13 +127,14 @@ public class Fight {
 				LCD.clear();
 				this.printBorder();
 				LCD.drawString("Du hast", 5, 2);
-				LCD.drawString("noch keine", 3, 3);
+				LCD.drawString("noch keine", 4, 3);
 				LCD.drawString("Items", 6, 4);
 				Button.waitForAnyPress(); // Auf Bestätigung warten
 				exit = false;
 				break;
 			case 2: // Pokemon
 				this.selectPokemon();
+				this.printPokemons(true); // Pokemons anzeigen und auf Bestätigung warten
 				break;
 			case 3: // Run
 				LCD.clear();
@@ -154,9 +156,10 @@ public class Fight {
 		int PokemonAnzahl = Pokemon.getPokemonNumber();
 
 		// Auswahlmenü
-		for(int n = 0; n <= PokemonAnzahl && n <= 4; n++) {
+		for(int n = 0; n < PokemonAnzahl && n < 4; n++) {
 			LCD.drawString(Pokemon.getPokemon(n).getName(), 5, 2+n);
 		}
+		LCD.drawChar('>', 3, 0 + 2);
 		
 		int button;
 		int option = 0;
@@ -183,20 +186,26 @@ public class Fight {
 		}
 		
 		// Optionen auswerten
-		Pokemon.getPokemon(option);
-		LCD.clear();
-		this.printBorder();
-
+		this.spielerPokemon = Pokemon.getPokemon(option);
 		
-		LCD.drawString("Dein Pokemon:", 2, 2);
-		LCD.drawString(this.spielerPokemon.getName(), 3, 3);
-		LCD.drawString("Dein Gegner:", 2, 4);
+		//this.printPokemons(); 	// Wird ggf in aufrufender Funktion angezeigt
+	}
+	
+	/* Ausgewählte Pokemons anzeigen */
+	private void printPokemons(boolean waitForPress) {
+		LCD.clear();
+		this.printBorder();		
+		LCD.drawString("Dein Pokemon:", 3, 2);
+		LCD.drawString(this.spielerPokemon.getName(), 4, 3);
+		LCD.drawString("Dein Gegner:", 3, 4);
 		if (this.gegnerPokemon != null) {
-			LCD.drawString(this.gegnerPokemon.getName(), 3, 5);
+			LCD.drawString(this.gegnerPokemon.getName(), 4, 5);
 		} else {
-			LCD.drawString("???????", 3, 5); // Pokemon ist noch nicht bekannt
+			LCD.drawString("???????", 4, 5); // Pokemon ist noch nicht bekannt
 		}
-		Button.waitForAnyPress();
+		if(waitForPress) {
+			Button.waitForAnyPress();
+		}
 	}
 
 	/* Fight-Szene (Rahmen) plotten */
@@ -217,14 +226,6 @@ public class Fight {
 	private void drawGegnerPokemon() throws InterruptedException {
 		Position2D position = new Position2D();
 		this.roboter.drawGcode(this.spielerPokemon.getGcodePath_back(), position);
-	}
-	
-	/* Lebensbalken ausmalen */
-	private void drawHealthBar(Position2D position) throws InterruptedException {
-		// Gcode zum Ausmalen generieren
-		List<Position3D> positions;
-		// Gcode malen
-		
 	}
 
 	/* Nächste Attacke auswählen */

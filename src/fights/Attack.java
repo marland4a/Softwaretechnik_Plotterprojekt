@@ -20,6 +20,17 @@ public class Attack {
 	/* Get damage in range damage_min - damage_max */
 	public int getDamage() {
 		Random rand = new Random();
-		return this.damage_min + rand.nextInt(this.damage_max - this.damage_min);
+		int damage_delta = this.damage_max - this.damage_min;
+		int damage;
+		if(damage_delta > 0) {
+			damage = this.damage_min + rand.nextInt(damage_delta);
+		}
+		else if(damage_delta == 0) {
+			damage = this.damage_max;
+		}
+		else {
+			damage = this.damage_min - rand.nextInt(-1 * damage_delta);
+		}
+		return damage;
 	}
 }
