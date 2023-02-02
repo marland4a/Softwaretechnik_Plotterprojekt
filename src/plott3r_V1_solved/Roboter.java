@@ -47,10 +47,6 @@ public class Roboter {
 		this.drawGcode(filename);
 	}
 
-	/* Display image on display */
-	private void drawDisplay(String filename) {
-
-	}
 
 	/* MAIN */
 	public static void main(String args[]) {
@@ -68,8 +64,8 @@ public class Roboter {
 				// Test:
 				// roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
 				// roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
-				roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
-				roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte nachbearbeitet.gcode");
+				//roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
+				//roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte nachbearbeitet.gcode");
 				// roboter.drawGcode("test2.gcode");
 				// roboter.drawGcode("Pikachu bereinigt 13012023.gcode");
 
@@ -78,7 +74,7 @@ public class Roboter {
 				Delay.msDelay(1000);
 				roboter.entfernePapier();
 				LCD.clear();
-				LCD.drawString("Nächste Runde", 2, 3);
+				LCD.drawString("Nachste Runde", 2, 3);
 				LCD.drawString("beginnen...", 3, 4);
 				Button.waitForAnyPress();
 			}
@@ -123,8 +119,9 @@ public class Roboter {
 		}
 		yAchse.stop();
 		yAchse.resetTachoCount();
-		Plott3rLCD.drawString("PRESS Programmstarten");
+		/*Plott3rLCD.drawString("PRESS Programmstarten");
 		Button.waitForAnyPress();
+		*/
 	}
 
 	private void entfernePapier() throws InterruptedException {
