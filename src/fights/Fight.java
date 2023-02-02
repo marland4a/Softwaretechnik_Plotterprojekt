@@ -1,10 +1,12 @@
 package fights;
 
+import java.util.List;
 import java.util.Random;
 
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import positions.Position2D;
+import positions.Position3D;
 
 public class Fight {
 	/* Settings */
@@ -159,7 +161,7 @@ public class Fight {
 		if (this.gegnerPokemon != null) {
 			LCD.drawString(this.gegnerPokemon.getName(), 3, 5);
 		} else {
-			LCD.drawString("???????", 5, 5); // Pokemon ist noch nicht bekannt
+			LCD.drawString("???????", 3, 5); // Pokemon ist noch nicht bekannt
 		}
 		Button.waitForAnyPress();
 	}
@@ -183,6 +185,14 @@ public class Fight {
 		Position2D position = new Position2D();
 		this.roboter.drawGcode(this.spielerPokemon.getGcodePath_back(), position);
 	}
+	
+	/* Lebensbalken ausmalen */
+	private void drawHealthBar(Position2D position) throws InterruptedException {
+		// Gcode zum Ausmalen generieren
+		List<Position3D> positions;
+		// Gcode malen
+		
+	}
 
 	/* Nächste Attacke auswählen */
 	private Attack selectAttack() {
@@ -190,10 +200,10 @@ public class Fight {
 		// Draw options
 		LCD.clear();
 		this.printBorder();
-		LCD.drawString("> " + Pokemon.getAttack(0).getName(), 3, 2); // Optionen anzeigen
-		LCD.drawString(Pokemon.getAttack(1).getName(), 5, 3);
-		LCD.drawString(Pokemon.getAttack(2).getName(), 5, 4);
-		LCD.drawString(Pokemon.getAttack(3).getName(), 5, 5);
+		LCD.drawString("> " + Pokemon.getAttack(0).getName(), 2, 2); // Optionen anzeigen
+		LCD.drawString(Pokemon.getAttack(1).getName(), 4, 3);
+		LCD.drawString(Pokemon.getAttack(2).getName(), 4, 4);
+		LCD.drawString(Pokemon.getAttack(3).getName(), 4, 5);
 		// Get selection (UP/DOWN, Bestätigen mit Enter)
 		int button;
 		while (true) {
@@ -201,19 +211,19 @@ public class Fight {
 			if (button == Button.ID_ENTER) {
 				break;
 			} else if (button == Button.ID_DOWN) {
-				LCD.drawChar(' ', 3, option + 2);
+				LCD.drawChar(' ', 2, option + 2);
 				option++;
 				if (option > 3) {
 					option = 0;
 				}
-				LCD.drawChar('>', 3, option + 2);
-			} else if (option == Button.ID_UP) {
-				LCD.drawChar(' ', 3, option + 2);
+				LCD.drawChar('>', 2, option + 2);
+			} else if (button == Button.ID_UP) {
+				LCD.drawChar(' ', 2, option + 2);
 				option--;
 				if (option < 0) {
 					option = 3;
 				}
-				LCD.drawChar('>', 3, option + 2);
+				LCD.drawChar('>', 2, option + 2);
 			}
 		}
 		return Pokemon.getAttack(option);
@@ -240,18 +250,18 @@ public class Fight {
 		int lcd_x = 3;
 		LCD.drawString(pokemon.getName(), lcd_x, lcd_y);
 		lcd_x += pokemon.getName().length() + 1;
-		LCD.drawString(": ", lcd_x, 2);
+		LCD.drawChar(':', lcd_x, lcd_y);
 		// Zweite Zeile: " Leben (-Damage)"
 		lcd_x = 4;
 		lcd_y++;
 		int_str = String.valueOf(pokemon.getLife());
 		LCD.drawString(int_str, lcd_x, lcd_y);
-		lcd_x += int_str.length();
+		lcd_x += int_str.length() + 1;
 		LCD.drawChar('(', lcd_x++, lcd_y);
 		LCD.drawChar('-', lcd_x++, lcd_y);
 		int_str = String.valueOf(pokemon.getLastDamage());
 		LCD.drawString(int_str, lcd_x, lcd_y);
-		lcd_x += int_str.length();
+		lcd_x += int_str.length() + 1;
 		LCD.drawChar(')', lcd_x, lcd_y);
 	}
 }

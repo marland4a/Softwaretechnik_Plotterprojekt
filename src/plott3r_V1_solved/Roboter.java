@@ -1,5 +1,7 @@
 package plott3r_V1_solved;
 
+import java.util.List;
+
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -45,6 +47,27 @@ public class Roboter {
 	public void drawGcode(String filename, positions.Position2D ursprung) throws InterruptedException {
 		this.moveToPosition(ursprung, 50);
 		this.drawGcode(filename);
+	}
+	
+	/* Gcode Array mit relativen Koordinaten zeichnen */
+	public void drawGcode(List<positions.Position3D> positions, positions.Position2D ursprung) throws InterruptedException {
+		positions.Position3D bewegung = new positions.Position3D(0, 0, false);
+
+		for (positions.Position3D nextPos : positions) {
+			if (!Float.isNaN(nextPos.getX())) {
+				// nextPos.setX(prevPos.getX());
+				bewegung.setX(nextPos.getX());
+			}
+			// bewegung.setX(nextPos.getX() - prevPos.getX());
+			if (!Float.isNaN(nextPos.getY())) {
+				// nextPos.setY(prevPos.getY());
+				bewegung.setY(this.YACHSE_MAX + nextPos.getY());
+			}
+			// bewegung.setY(nextPos.getY() - prevPos.getY());
+			bewegung.setZ(nextPos.isZ());
+
+			this.moveToPosition(ursprung.add(bewegung), 50);
+		}
 	}
 
 
