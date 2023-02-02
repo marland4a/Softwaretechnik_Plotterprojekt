@@ -30,4 +30,16 @@ public class Position3D extends Position2D {
 	public void setZ(boolean z) {
 		this.z = z;
 	}
+	
+	// NEU: Additions"operator" hinzufügen
+	public Position3D add(Position3D pos) {
+		//this.setX(x + pos.getX());
+		//this.setY(y + pos.getY());
+		boolean z = false;
+		if(this.isZ() || pos.isZ()) {
+			z = true;
+		}
+		pos = new Position3D(this.getX() + pos.getX(), this.getY() + pos.getY(), z); 
+		return pos;
+	}
 }

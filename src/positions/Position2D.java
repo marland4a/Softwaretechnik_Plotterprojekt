@@ -28,9 +28,10 @@ public class Position2D {
 
 	// NEU: Additions"operator" hinzufügen
 	public Position2D add(Position2D pos) {
-		this.setX(x + pos.getX());
-		this.setY(y + pos.getY());
-		return this;
+		//this.setX(x + pos.getX());
+		//this.setY(y + pos.getY());
+		pos = new Position2D(x + pos.getX(), y + pos.getY()); 
+		return pos;
 	}
 
 	public float getX() {

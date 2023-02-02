@@ -15,9 +15,9 @@ public class Pokemon {
 	};
 
 	private static Pokemon[] pokemons = {
-			new Pokemon("Pikachu", "pikachu.gcode", "pikachu_back.gcode"),
-			new Pokemon("Schiggi", "schiggi.gcode", "schiggi_back.gcode"),
-			new Pokemon("test2", "test2.gcode", "test2.gcode")
+			new Pokemon("Pikachu", "Pikachu.gcode", "Pikachu_ruecken.gcode"),
+			new Pokemon("Schiggi", "Schiggy.gcode", "Schiggy_ruecken.gcode"),
+			//new Pokemon("test2", "test2.gcode", "test2.gcode")
 	};
 
 	public static Attack getAttackByName(String name) {

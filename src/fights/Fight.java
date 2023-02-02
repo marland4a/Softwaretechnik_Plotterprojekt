@@ -33,7 +33,8 @@ public class Fight {
 		this.printPokemons(false);
 
 		// Draw fight scene
-		// this.drawFightScene(); // Disabled for testing
+		this.drawFightScene();
+		this.roboter.moveToPosition(new Position2D(0, 140), 100);
 
 		// Fight
 		Attack spieler_attack, gegner_attack;
@@ -210,10 +211,15 @@ public class Fight {
 
 	/* Fight-Szene (Rahmen) plotten */
 	private void drawFightScene() throws InterruptedException {
-		// this.roboter.drawGcode("fightscene_empty.gcode)");
-		// this.roboter.drawGcode(this.gegnerPokemon.getFile());
-		// this.roboter.drawGcode(this.spielerPokemon.getFile());
-		this.roboter.drawGcode("EKKIG bereinigt.gcode");
+		// Relative Koordinaten berechnen (Spieler und Gegner relativ zum Hintergrundbild)
+		//Position2D basis = new Position2D(8, 20);
+		Position2D basis = new Position2D(0, 20);
+		Position2D spieler_pos = basis.add(new Position2D(116 - 20, 5));	// Experimentell herausgefunden
+		Position2D gegner_pos = basis.add(new Position2D(35 - 40, 26 + 3));
+		// Zeichnen
+		this.roboter.drawGcode("nur_layout.gcode", basis);
+		this.roboter.drawGcode(this.spielerPokemon.getGcodePath_back(), spieler_pos); // Erst Spieler plotten,
+		this.roboter.drawGcode(this.gegnerPokemon.getGcodePath_front(), gegner_pos);  // Gegner erscheint danach
 	}
 
 	/* Spieler-Pokemon plotten */
@@ -283,19 +289,19 @@ public class Fight {
 		// Erste Zeile: "Name:"
 		int lcd_x = 3;
 		LCD.drawString(pokemon.getName(), lcd_x, lcd_y);
-		lcd_x += pokemon.getName().length() + 1;
+		lcd_x += pokemon.getName().length();
 		LCD.drawChar(':', lcd_x, lcd_y);
 		// Zweite Zeile: " Leben (-Damage)"
 		lcd_x = 4;
 		lcd_y++;
 		int_str = String.valueOf(pokemon.getLife());
 		LCD.drawString(int_str, lcd_x, lcd_y);
-		lcd_x += int_str.length() + 1;
+		lcd_x += int_str.length();
 		LCD.drawChar('(', lcd_x++, lcd_y);
 		LCD.drawChar('-', lcd_x++, lcd_y);
 		int_str = String.valueOf(pokemon.getLastDamage());
 		LCD.drawString(int_str, lcd_x, lcd_y);
-		lcd_x += int_str.length() + 1;
+		lcd_x += int_str.length();
 		LCD.drawChar(')', lcd_x, lcd_y);
 	}
 }

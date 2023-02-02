@@ -15,7 +15,8 @@ import util.Plott3rLCD;
 public class Roboter {
 
 	// Mechanische Anschläge
-	private final float XACHSE_MIN = -136.0f;
+	//private final float XACHSE_MIN = -136.0f;
+	private final float XACHSE_MIN = -100.0f;
 	private final float YACHSE_MAX = 230.0f;
 
 	/*
@@ -23,23 +24,21 @@ public class Roboter {
 	 */
 	public void drawGcode(String filename) throws InterruptedException {
 		util.GcodeParser parser = new util.GcodeParser(filename);
-		positions.Position2D ursprung = this.currentPosition;
+		positions.Position3D ursprung = this.currentPosition;
 		positions.Position3D bewegung = new positions.Position3D(0, 0, false);
 
 		for (positions.Position3D nextPos : parser.getAllPositions()) {
-			if (!Float.isNaN(nextPos.getX())) {
-				// nextPos.setX(prevPos.getX());
-				bewegung.setX(nextPos.getX());
+			
+			if (!Float.isNaN(nextPos.getX())) {  // Ignorieren falls nicht gesetzt
+				bewegung.setX(nextPos.getX());	 //  (z.B. Zeilen mit nur Z)
 			}
-			// bewegung.setX(nextPos.getX() - prevPos.getX());
 			if (!Float.isNaN(nextPos.getY())) {
-				// nextPos.setY(prevPos.getY());
-				bewegung.setY(this.YACHSE_MAX + nextPos.getY());
+				bewegung.setY(nextPos.getY());
 			}
-			// bewegung.setY(nextPos.getY() - prevPos.getY());
 			bewegung.setZ(nextPos.isZ());
 
-			this.moveToPosition(ursprung.add(bewegung), 50);
+			this.moveToPosition(ursprung.add(bewegung), 30);
+			//this.moveToPosition(bewegung, 50);
 		}
 	}
 
@@ -75,7 +74,7 @@ public class Roboter {
 	public static void main(String args[]) {
 		try {
 			Roboter roboter = new Roboter();
-			fights.Fight fight = new fights.Fight(roboter);
+			fights.Fight fight = null;
 
 			// Kämpfen, bis der Spieler aufgibt
 			// Beendigung über Auswahl 'Run' in ersten Menü
@@ -83,15 +82,8 @@ public class Roboter {
 				Sound.beep();
 				roboter.moveToHomePosition();
 				roboter.bereitePapierVor();
-
-				// Test:
-				// roboter.moveToPosition(new positions.Position2D(0, roboter.YACHSE_MAX), 50);
-				// roboter.drawGcode("GanzerKampfbereinigt_shrink.gcode");
-				//roboter.moveToPosition(new positions.Position2D(10, roboter.YACHSE_MAX), 50);
-				//roboter.drawGcode("Pikachu inkscape klein skaliert ca4cm 250 Punkte nachbearbeitet.gcode");
-				// roboter.drawGcode("test2.gcode");
-				// roboter.drawGcode("Pikachu bereinigt 13012023.gcode");
-
+				
+				fight = new fights.Fight(roboter);
 				fight.start();
 
 				Delay.msDelay(1000);
@@ -126,7 +118,7 @@ public class Roboter {
 	private void bereitePapierVor() throws InterruptedException {
 		Plott3rLCD.drawString("Blatt einlegen und PRESS");
 		Button.waitForAnyPress();
-		yAchse.setSpeed(200);
+		yAchse.setSpeed(100);
 		while (!yAchse.isSensorAktiv()) {
 			yAchse.forward();
 		}
@@ -187,25 +179,23 @@ public class Roboter {
 			xAchse.forward();
 		}
 		xAchse.stop();
-		this.currentPosition = new Position3D(0, 0, false);
+		this.currentPosition = new Position3D(5, 0, false);
 		this.resetTachoCounts();
-		this.moveToPosition(new positions.Position2D(0, 0), 20);
-		this.currentPosition = new Position3D(-1 * this.XACHSE_MIN, 0, false);
+		this.resetTachoCounts();
 	}
 
-	private void moveToPosition(Position2D position2D, float mmSec) throws InterruptedException {
+	public void moveToPosition(Position2D position2D, float mmSec) throws InterruptedException {
 		this.moveToPosition(new Position3D(position2D, this.zAchse.isAktiv()), mmSec);
 	}
 
-	private void moveToPosition(Position3D position, float mmSec) throws InterruptedException {
+	public void moveToPosition(Position3D position, float mmSec) throws InterruptedException {
 		if (position.isZ())
 			this.zAchse.aktiviere();
 		else
 			this.zAchse.deaktiviere();
+		zAchse.getMotor().waitComplete();
 
-		// float deltaX = currentPosition.getX() - position.getX();
-		// float deltaY = currentPosition.getY() - position.getY();
-		float deltaX = (-1 * this.XACHSE_MIN - position.getX()) - currentPosition.getX();
+		float deltaX = position.getX() - currentPosition.getX();
 		float deltaY = position.getY() - currentPosition.getY();
 		float hypo = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
